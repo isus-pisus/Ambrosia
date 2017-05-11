@@ -118,7 +118,6 @@ app.post('/token', function(req, res) {
 });
 
 // find and return all data points
-
 app.get('/posts', function (req, res) {
   Post.find(function (err, post) {
     if (err) {
@@ -128,8 +127,48 @@ app.get('/posts', function (req, res) {
       res.send(post);
   });
 });
-// query comments made on a post using post id
 
+// create new post
+app.post('/posts', function (req, res) {
+  // var url_parts = url.parse(req.url,true);
+  var body = req.body;
+  var avatar = {
+    'name': body.avatar_name,
+    'url': body.avatar_url
+  };
+
+  const newPost = new Post({
+    _id: body._id,
+    title: body.title,
+    body: body.body,
+    avatar: avatar
+  });
+
+  newPost.save(function(err) {
+    if (err) {
+      return res.status(400).json({ success: false, message: 'Post could not be saved, check that all fields are entered.'});
+    }
+    res.status(201).json({ success: true, message: 'Successfully created new post.' });
+  });
+  console.log(body);
+});
+
+// delete a post
+app.delete('/posts/:_id', requireAuth, function (req, res) {
+  var body = req.params;
+  Post.deleteOne({_id: body._id}, function (err) {
+    if (err) {
+      return res.json({success: false, message:"An error occured. Delete unsuccessfull."});
+      // console.log('something went wrong while deleting post');
+    } else {
+      res.json({success: true, message:"Delete successfull."});
+
+    }
+  });
+});
+
+
+// query comments made on a post using post id
 
 app.get('/comments', function (req, res) {
   var query = req.query.comment_id;
@@ -185,33 +224,10 @@ app.get('/images', function (req, res) {
   });
 });
 
-app.post('/posts', function (req, res) {
-  // var url_parts = url.parse(req.url,true);
-  var body = req.body;
-  var avatar = {
-    'name': body.avatar_name,
-    'url': body.avatar_url
-  };
-
-  const newPost = new Post({
-    _id: body._id,
-    title: body.title,
-    body: body.body,
-    avatar: avatar
-  });
-
-  newPost.save(function(err) {
-    if (err) {
-      return res.status(400).json({ success: false, message: 'Post could not be saved, check that all fields are entered.'});
-    }
-    res.status(201).json({ success: true, message: 'Successfully created new post.' });
-  });
-  console.log(body);
-});
 
 app.post('/images', function (req, res) {
   var body = req.body;
-
+  console.log(body);
   const newImage = new Image({
     _id: body._id,
     sku: body.sku,
@@ -228,6 +244,21 @@ app.post('/images', function (req, res) {
   });
   // console.log(body);
 });
+
+app.delete('/images/:_id', function (req, res) {
+  var body = req.params;
+  Image.deleteOne({_id: body._id}, function (err) {
+    if (err) {
+      return res.json({success: false, message:"An error occured. Delete unsuccessfull."});
+      // console.log('something went wrong while deleting post');
+    } else {
+      res.json({success: true, message:"Delete successfull."});
+
+    }
+    // console.log(chart);
+  });
+});
+
 
 app.post('/comments', function (req, res) {
   // var url_parts = url.parse(req.url,true);
