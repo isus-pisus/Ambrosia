@@ -16,7 +16,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 var http = require('http');
 var url = require('url');
-
+var dateFormat = require('dateformat');
 
 const requireAuth = passport.authenticate('jwt', { session: false });
 mongoose.connect(config.datagetDatabase);
@@ -124,6 +124,7 @@ app.get('/posts', function (req, res) {
       console.log('something went wrong');
     }
       // console.log(chart);
+
       res.send(post);
   });
 });
@@ -131,6 +132,8 @@ app.get('/posts', function (req, res) {
 // create new post
 app.post('/posts', function (req, res) {
   // var url_parts = url.parse(req.url,true);
+  var now = new Date();
+  var createdAt = dateFormat(now, "mmmm dS, yyyy");
   var body = req.body;
   var avatar = {
     'name': body.avatar_name,
@@ -141,7 +144,8 @@ app.post('/posts', function (req, res) {
     _id: body._id,
     title: body.title,
     body: body.body,
-    avatar: avatar
+    avatar: avatar,
+    createdAt: createdAt
   });
 
   newPost.save(function(err) {

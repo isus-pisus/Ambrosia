@@ -28,10 +28,12 @@ var post = new postschema({
       type: String,
       required: true
     }
+  },
+  createdAt: {
+    // type: Date
+    type: String,
+    required: true
   }
-},
-{
-  timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
 
 var postmodel = mongoose.model('post', post);
