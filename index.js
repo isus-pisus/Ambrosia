@@ -283,7 +283,9 @@ app.post('/comments', function (req, res) {
   });
   console.log(body);
 });
-
+app.get('/google152a2524f3bbf68d.html', function(req, res) {
+  res.send('google-site-verification: google152a2524f3bbf68d.html');
+})
 // server.listen(3001);
 //  set port to listen to
 
