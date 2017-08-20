@@ -18,6 +18,9 @@ var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
 
+
+var io = require('socket.io')();
+
 const requireAuth = passport.authenticate('jwt', { session: false });
 mongoose.connect(config.datagetDatabase);
 
@@ -171,124 +174,21 @@ app.delete('/posts/:_id', requireAuth, function (req, res) {
   });
 });
 
-
-// query comments made on a post using post id
-
-app.get('/comments', function (req, res) {
-  var query = req.query.comment_id;
-  console.log(query);
-  Comm.find({comment_id: query},function (err, comment) {
-    if (err) {
-      console.log('something went wrong');
-    }
-      res.send(comment);
-  });
+io.on('connection', function(socket){
+  // socket.on('status', )
+  console.log('[+] a user connected');
 });
+// var temperature = 0;
+setInterval(function (){
+  var now = new Date();
+  var data = {
+    timeStamp: dateFormat(now, "h:MM TT"),
+    point: Math.floor((Math.random() * 10) + 70)
+  };
 
-app.get('/categories', function (req, res) {
-  var query = req.query;
-  Image.find({category: query.category},function (err, categories) {
-    if (err) {
-      console.log('something went wrong');
-    }
-      res.send(categories);
-  });
-});
-
-app.get('/reads/:_id', function (req, res) {
-  Post.findOne({_id: req.params._id},function (err, read) {
-    if (err) {
-      console.log('something went wrong');
-    }
-      // console.log(chart);
-      res.send(read);
-  });
-});
-
-
-
-// app.get('/comments/:_id', function (req, res) {
-//   Comm.find({comment_id: req.params._id},function (err, comment) {
-//     if (err) {
-//       console.log('something went wrong');
-//     }
-//       // console.log(comment);
-//       res.send(comment);
-//   });
-// });
-
-
-app.get('/images', function (req, res) {
-  Image.find(function (err, image) {
-    if (err) {
-      console.log('something went wrong');
-    }
-      // console.log(chart);
-      res.send(image);
-  });
-});
-
-
-app.post('/images', function (req, res) {
-  var body = req.body;
-  console.log(body);
-  const newImage = new Image({
-    _id: body._id,
-    sku: body.sku,
-    name: body.name,
-    category: body.category,
-    url: body.url
-  });
-
-  newImage.save(function(err) {
-    if (err) {
-      return res.status(400).json({ success: false, message: 'Image could not be saved, check that all fields are entered.'});
-    }
-    res.status(201).json({ success: true, message: 'Successfully added new image.' });
-  });
-  // console.log(body);
-});
-
-app.delete('/images/:_id', function (req, res) {
-  var body = req.params;
-  Image.deleteOne({_id: body._id}, function (err) {
-    if (err) {
-      return res.json({success: false, message:"An error occured. Delete unsuccessfull."});
-      // console.log('something went wrong while deleting post');
-    } else {
-      res.json({success: true, message:"Delete successfull."});
-
-    }
-    // console.log(chart);
-  });
-});
-
-
-app.post('/comments', function (req, res) {
-  // var url_parts = url.parse(req.url,true);
-  var body = req.body.comment;
-
-
-  const newComment = new Comm({
-    _id: body.ref_id,
-    comment_id: body.comment_id,
-    body: body.body
-  });
-
-  newComment.save(function(err) {
-    if (err) {
-      return res.status(400).json({ success: false, message: 'Comment could not be saved, check that all fields are entered.'});
-    }
-    res.status(201).json({ success: true, message: 'Successfully created new Comment.' });
-  });
-  console.log(body);
-});
-app.get('/google152a2524f3bbf68d.html', function(req, res) {
-  res.send('google-site-verification: google152a2524f3bbf68d.html');
-})
-// server.listen(3001);
-//  set port to listen to
-
+  io.emit('temperature', data);
+}, 60000);
+io.listen(1724);
 app.listen(3000, function(){
     console.log('running on local host 3000');
 });

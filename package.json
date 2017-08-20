@@ -27,6 +27,7 @@
     "mongoose": "^4.9.4",
     "morgan": "^1.8.1",
     "passport": "^0.3.2",
-    "passport-jwt": "^2.2.1"
+    "passport-jwt": "^2.2.1",
+    "time-stamp": "^2.0.0"
   }
 }
