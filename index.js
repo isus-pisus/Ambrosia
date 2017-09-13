@@ -18,7 +18,7 @@ var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
 
-
+var ds18b20 = require('ds18b20');
 var io = require('socket.io')();
 
 const requireAuth = passport.authenticate('jwt', { session: false });
@@ -120,63 +120,8 @@ app.post('/token', function(req, res) {
   });
 });
 
-// find and return all data points
-app.get('/posts', function (req, res) {
-  Post.find(function (err, post) {
-    if (err) {
-      console.log('something went wrong');
-    }
-      // console.log(chart);
-
-      res.send(post);
-  });
-});
-
-// create new post
-app.post('/posts', function (req, res) {
-  // var url_parts = url.parse(req.url,true);
-  var now = new Date();
-  var createdAt = dateFormat(now, "mmmm dS, yyyy");
-  var body = req.body;
-  var avatar = {
-    'name': body.avatar_name,
-    'url': body.avatar_url
-  };
-
-  const newPost = new Post({
-    _id: body._id,
-    title: body.title,
-    body: body.body,
-    avatar: avatar,
-    createdAt: createdAt
-  });
-
-  newPost.save(function(err) {
-    if (err) {
-      return res.status(400).json({ success: false, message: 'Post could not be saved, check that all fields are entered.'});
-    }
-    res.status(201).json({ success: true, message: 'Successfully created new post.' });
-  });
-  console.log(body);
-});
-
-// delete a post
-app.delete('/posts/:_id', requireAuth, function (req, res) {
-  var body = req.params;
-  Post.deleteOne({_id: body._id}, function (err) {
-    if (err) {
-      return res.json({success: false, message:"An error occured. Delete unsuccessfull."});
-      // console.log('something went wrong while deleting post');
-    } else {
-      res.json({success: true, message:"Delete successfull."});
-
-    }
-  });
-});
-
 io.on('connection', function(socket){
-  // socket.on('status', )
-  console.log('[+] a user connected');
+  // console.log('[+] a user connected');
 });
 // var temperature = 0;
 setInterval(function (){
@@ -184,10 +129,12 @@ setInterval(function (){
   var data = {
     timeStamp: dateFormat(now, "h:MM TT"),
     point: Math.floor((Math.random() * 10) + 70)
+    // point: ds18b20.temperatureSync('28-00000853833b')
   };
 
   io.emit('temperature', data);
-}, 60000);
+  // console.log(data);
+}, 1000);
 io.listen(1724);
 app.listen(3000, function(){
     console.log('running on local host 3000');
