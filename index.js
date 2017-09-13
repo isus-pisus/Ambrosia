@@ -128,8 +128,8 @@ setInterval(function (){
   var now = new Date();
   var data = {
     timeStamp: dateFormat(now, "h:MM TT"),
-    point: Math.floor((Math.random() * 10) + 70)
-    // point: ds18b20.temperatureSync('28-00000853833b')
+    // point: Math.floor((Math.random() * 10) + 70)
+    point: ds18b20.temperatureSync('28-00000853833b')
   };
 
   io.emit('temperature', data);
