@@ -18,7 +18,12 @@ var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
 
+ // sensors
+var sensorLib = require('node-dht-sensor');
 var ds18b20 = require('ds18b20');
+var rpiDhtSensor = require('rpi-dht-sensor');
+
+
 var io = require('socket.io')();
 
 const requireAuth = passport.authenticate('jwt', { session: false });
@@ -120,16 +125,44 @@ app.post('/token', function(req, res) {
   });
 });
 
+
+
+
+
+
+
+
 io.on('connection', function(socket){
   // console.log('[+] a user connected');
 });
 // var temperature = 0;
 setInterval(function (){
   var now = new Date();
+
+  var dht_sensor = {
+    initialize: function () {
+      return sensorLib.initialize(11, 6);
+    },
+    read: function () {
+      var readout = sensorLib.read();
+      // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
+      // 'humidity: ' + readout.humidity.toFixed(2) + '%');
+      return readout.humidity.toFixed(2);
+    }
+  };
+
+  if (dht_sensor.initialize()) {
+    dht_sensor.read();
+  } else {
+    console.warn('Failed to initialize sensor');
+  }
+
   var data = {
     timeStamp: dateFormat(now, "h:MM TT"),
-    // point: Math.floor((Math.random() * 10) + 70)
-    point: ds18b20.temperatureSync('28-00000853833b')
+    point: {
+      temp: ds18b20.temperatureSync('28-00000853833b'),
+      humidity: dht_sensor.read()
+    }
   };
 
   io.emit('temperature', data);

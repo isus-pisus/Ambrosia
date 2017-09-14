@@ -29,6 +29,7 @@
     "morgan": "^1.8.1",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
+    "rpi-dht-sensor": "^0.1.1",
     "socket.io": "^2.0.3",
     "time-stamp": "^2.0.0"
   }
