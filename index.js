@@ -182,7 +182,7 @@ setInterval(function (){
 
   newPoint.save(function(err) {
     if (err) {
-      console.log('error occored could not store data point');
+      console.log(err);
     }
   });
   // console.log(data);
