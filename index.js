@@ -181,9 +181,6 @@ setInterval(function(){
   var now = new Date();
 
   var dht_sensor = {
-    initialize: function () {
-      return sensorLib.initialize(11, 6);
-    },
     read: function () {
       var readout = sensorLib.read();
       // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
@@ -191,12 +188,6 @@ setInterval(function(){
       return readout.humidity.toFixed(0);
     }
   };
-
-  if (dht_sensor.initialize()) {
-    dht_sensor.read();
-  } else {
-    console.warn('Failed to initialize sensor');
-  }
   const newPoint = new Data_point({
     // timeStamp: dateFormat(now, "h:MM TT"),
     _id: shortid.generate(),
