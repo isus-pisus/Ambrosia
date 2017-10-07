@@ -7,7 +7,7 @@ var morgan  = require('morgan');
 const passport = require('passport');
 const config = require('./config/main'); // database informainton
 const Post = require('./models/post'); // schema for chart data point
-const Data_point = require('./models/DataPoint'); // schema for chart data point
+const Data_point = require('./models/data'); // schema for chart data point
 const Image = require('./models/image'); // schema for chart data point
 const User = require('./models/user'); // schema for user info
 const mongoose = require('mongoose');
@@ -27,7 +27,7 @@ var rpiDhtSensor = require('rpi-dht-sensor');
 var io = require('socket.io')();
 
 const requireAuth = passport.authenticate('jwt', { session: false });
-mongoose.connect(config.database);
+mongoose.connect(config.home);
 
 // Initialize passport for use
 app.use(passport.initialize());
