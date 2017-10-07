@@ -7,7 +7,7 @@ var morgan  = require('morgan');
 const passport = require('passport');
 const config = require('./config/main'); // database informainton
 const Post = require('./models/post'); // schema for chart data point
-const DataPoint = require('./models/data'); // schema for chart data point
+const Data_point = require('./models/DataPoint'); // schema for chart data point
 const Image = require('./models/image'); // schema for chart data point
 const User = require('./models/user'); // schema for user info
 const mongoose = require('mongoose');
@@ -126,7 +126,7 @@ app.post('/token', function(req, res) {
 });
 
 app.get('/points', function (req, res){
-  DataPoint.find({}, function(err, points){
+  Data_point.find({}, function(err, points){
     if (err) {
       console.log('an error occured');
     } else {
@@ -174,7 +174,7 @@ setInterval(function (){
     }
   };
   io.emit('temperature', data);
-  const newPoint = new DataPoint({
+  const newPoint = new Data_point({
     timeStamp: dateFormat(now, "h:MM TT"),
     point: {
       temp: ds18b20.temperatureSync('28-00000853833b'),

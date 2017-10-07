@@ -4,9 +4,9 @@ var mongoose = require('mongoose');
 
 var router = express.Router();
 var app = express();
-var dataPointschema = mongoose.Schema;
+var DataPointschema = mongoose.Schema;
 
-var dataPoint = new dataPointschema({
+var DataPoint = new DataPointschema({
   _id: {
     type: String,
     required: true,
@@ -31,6 +31,6 @@ var dataPoint = new dataPointschema({
   timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
 
-var dataPointmodel = mongoose.model('dataPoint', dataPoint);
+var DataPointmodel = mongoose.model('DataPoint', DataPoint);
 
-module.exports = dataPointmodel;
+module.exports = DataPointmodel;
