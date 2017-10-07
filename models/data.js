@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
+var shortid = require('shortid');
 
 var router = express.Router();
 var app = express();
