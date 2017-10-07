@@ -210,8 +210,8 @@ setInterval(function(){
     }
   });
 
-}, 1000);
-// }, 600000);
+// }, 1000);
+}, 600000);
 io.listen(1724);
 app.listen(3000, function(){
     console.log('running on local host 3000');
