@@ -144,6 +144,33 @@ app.get('/points', function (req, res){
 
 io.on('connection', function(socket){
   // console.log('[+] a user connected');
+  var now = new Date();
+
+  var dht_sensor = {
+    initialize: function () {
+      return sensorLib.initialize(11, 6);
+    },
+    read: function () {
+      var readout = sensorLib.read();
+      // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
+      // 'humidity: ' + readout.humidity.toFixed(2) + '%');
+      return readout.humidity.toFixed(0);
+    }
+  };
+
+  if (dht_sensor.initialize()) {
+    dht_sensor.read();
+  } else {
+    console.warn('Failed to initialize sensor');
+  }
+  var data = {
+    timeStamp: dateFormat(now, "h:MM TT"),
+    point: {
+      temp: ds18b20.temperatureSync('28-00000853833b'),
+      humidity: dht_sensor.read()
+    }
+  };
+  io.emit('temperature', data);
 });
 // var temperature = 0;
 setInterval(function (){
@@ -174,20 +201,6 @@ setInterval(function (){
     }
   };
   io.emit('temperature', data);
-  // console.log(data);
-}, 1000);
-
-setInterval(function(){
-  var now = new Date();
-
-  var dht_sensor = {
-    read: function () {
-      var readout = sensorLib.read();
-      // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
-      // 'humidity: ' + readout.humidity.toFixed(2) + '%');
-      return readout.humidity.toFixed(0);
-    }
-  };
   const newPoint = new Data_point({
     // timeStamp: dateFormat(now, "h:MM TT"),
     _id: shortid.generate(),
@@ -200,9 +213,44 @@ setInterval(function(){
       console.log(err);
     }
   });
-
-// }, 1000);
+  // console.log(data);
 }, 180000);
+
+// setInterval(function(){
+//   var now = new Date();
+//
+//   var dht_sensor = {
+//     initialize: function () {
+//       return sensorLib.initialize(11, 6);
+//     },
+//     read: function () {
+//       var readout = sensorLib.read();
+//       // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
+//       // 'humidity: ' + readout.humidity.toFixed(2) + '%');
+//       return readout.humidity.toFixed(0);
+//     }
+//   };
+//
+//   if (dht_sensor.initialize()) {
+//     dht_sensor.read();
+//   } else {
+//     console.warn('Failed to initialize sensor');
+//   }
+//   const newPoint = new Data_point({
+//     // timeStamp: dateFormat(now, "h:MM TT"),
+//     _id: shortid.generate(),
+//     temp: ds18b20.temperatureSync('28-00000853833b'),
+//     humidity: dht_sensor.read()
+//   });
+//
+//   newPoint.save(function(err) {
+//     if (err) {
+//       console.log(err);
+//     }
+//   });
+//
+// // }, 1000);
+// }, 180000);
 io.listen(1724);
 app.listen(3000, function(){
     console.log('running on local host 3000');
