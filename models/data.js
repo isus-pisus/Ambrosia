@@ -8,7 +8,8 @@ var DataPointschema = mongoose.Schema;
 
 var DataPoint = new DataPointschema({
   _id: {
-    type: String,
+      type: String,
+      'default': shortid.generate
   },
   // timeStamp: {
   //   type: String,
