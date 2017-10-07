@@ -9,7 +9,6 @@ var DataPointschema = mongoose.Schema;
 var DataPoint = new DataPointschema({
   _id: {
     type: String,
-    required: true,
   },
   // timeStamp: {
   //   type: String,
