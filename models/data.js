@@ -4,27 +4,33 @@ var mongoose = require('mongoose');
 
 var router = express.Router();
 var app = express();
-var commentschema = mongoose.Schema;
+var dataPointschema = mongoose.Schema;
 
-var comment = new commentschema({
+var dataPoint = new dataPointschema({
   _id: {
     type: String,
     required: true,
   },
-  comment_id: {
-    type: String,
+  timeStamp: {
+    type: Date,
     required: true,
     unique: false
   },
-  body: {
-    type: String,
-    required: true,
+  point: {
+    temp: {
+      type: String,
+      required: true,
+    },
+    humidity: {
+      type: String,
+      required: true,
+    }
   },
 },
 {
   timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
 
-var commentmodel = mongoose.model('comment', comment);
+var dataPointmodel = mongoose.model('dataPoint', dataPoint);
 
-module.exports = commentmodel;
+module.exports = dataPointmodel;
