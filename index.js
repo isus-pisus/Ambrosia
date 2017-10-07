@@ -176,6 +176,7 @@ setInterval(function (){
   io.emit('temperature', data);
   const newPoint = new Data_point({
     // timeStamp: dateFormat(now, "h:MM TT"),
+    _id: shortid.generate(),
     temp: ds18b20.temperatureSync('28-00000853833b'),
     humidity: dht_sensor.read()
   });
