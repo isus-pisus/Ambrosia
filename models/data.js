@@ -11,10 +11,10 @@ var DataPoint = new DataPointschema({
     type: String,
     required: true,
   },
-  timeStamp: {
-    type: String,
-    required: true,
-  },
+  // timeStamp: {
+  //   type: String,
+  //   required: true,
+  // },
   temp: {
     type: Number,
     required: true,
@@ -23,6 +23,9 @@ var DataPoint = new DataPointschema({
     type: Number,
     required: true,
   }
+},
+{
+  timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
 
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
