@@ -12,23 +12,17 @@ var DataPoint = new DataPointschema({
     required: true,
   },
   timeStamp: {
-    type: Date,
+    type: String,
     required: true,
-    unique: false
   },
-  point: {
-    temp: {
-      type: String,
-      required: true,
-    },
-    humidity: {
-      type: String,
-      required: true,
-    }
+  temp: {
+    type: Number,
+    required: true,
   },
-},
-{
-  timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
+  humidity: {
+    type: Number,
+    required: true,
+  }
 });
 
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
