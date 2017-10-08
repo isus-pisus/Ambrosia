@@ -11,17 +11,17 @@ var DataPoint = new DataPointschema({
       type: String,
       required: true
   },
-  // timeStamp: {
-  //   type: String,
-  //   required: true,
-  // },
+  date: {
+    type: String,
+    required: true
+  },
   temp: {
     type: Number,
-    required: true,
+    required: true
   },
   humidity: {
     type: Number,
-    required: true,
+    required: true
   }
 },
 {
