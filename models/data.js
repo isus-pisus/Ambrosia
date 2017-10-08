@@ -12,7 +12,7 @@ var DataPoint = new DataPointschema({
       required: true
   },
   date: {
-    type: Date,
+    type: String,
     required: true
   },
   temp: {
