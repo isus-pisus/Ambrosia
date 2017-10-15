@@ -140,7 +140,7 @@ app.get('/points/:date', function (req, res){
     if (err) {
       console.log('an error occured');
     } if(!points.data){
-      res.status(200).json({ success: true, msg: "No data found for "+req.params.date});
+      res.status(200).json({ success: false, msg: "No data found for "+req.params.date});
     } else {
         res.status(200).json({ success: true, data: points });
     }
