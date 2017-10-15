@@ -27,6 +27,7 @@
     "jsonwebtoken": "^7.3.0",
     "mongoose": "^4.9.4",
     "morgan": "^1.8.1",
+    "node-dht-sensor": "0.0.32",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "rpi-dht-sensor": "^0.1.1",
