@@ -136,20 +136,26 @@ app.get('/points', function (req, res){
 });
 
 app.get('/points/:date', function (req, res){
-  Data_point.find({date: req.params.date}, function(err, points){
+  Data_point.find({date: req.params.date}, function(oerr, points){
     if (err) {
       console.log('an error occured');
+    } if(!points.data){
+      res.status(200).json({ success: true, msg: "No data found for "+req.params.date});
     } else {
         res.status(200).json({ success: true, data: points });
     }
   })
 });
 
-
-
-
-
-
+app.delete('/points/:date', function (req, res){
+  Data_point.remove({date: req.params.date}, function(err, points){
+    if (err) {
+      console.log('an error occured');
+    } else {
+        res.status(200).json({ success: true});
+    }
+  })
+});
 
 
 io.on('connection', function(socket){
