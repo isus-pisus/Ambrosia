@@ -163,6 +163,7 @@ io.on('connection', function(socket){
   // console.log('[+] a user connected');
   var now = new Date();
 
+
   var dht_sensor = {
     initialize: function () {
       return sensorLib.initialize(11, 6);
@@ -174,7 +175,6 @@ io.on('connection', function(socket){
       return readout.humidity.toFixed(0);
     }
   };
-
   if (dht_sensor.initialize()) {
     dht_sensor.read();
   } else {
