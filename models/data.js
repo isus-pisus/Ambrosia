@@ -1,6 +1,7 @@
+const timeZone = require('mongoose-timezone');
+var mongoose = require('mongoose');
 var express = require('express');
 var path = require('path');
-var mongoose = require('mongoose');
 
 var router = express.Router();
 var app = express();
@@ -22,12 +23,12 @@ var DataPoint = new DataPointschema({
   humidity: {
     type: Number,
     required: true
+  },
+  timestamp: {
+    type: Date
   }
-},
-{
-  timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
-
+DataPoint.plugin(timeZone, { paths: ['timestamp'] });
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
 
 module.exports = DataPointmodel;
