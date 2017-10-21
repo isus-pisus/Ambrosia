@@ -34,6 +34,7 @@
     "shortid": "^2.2.8",
     "socket.io": "^2.0.3",
     "time-stamp": "^2.0.0",
-    "to-unix-timestamp": "github:segmentio/to-unix-timestamp"
+    "to-unix-timestamp": "github:segmentio/to-unix-timestamp",
+    "unix-time": "^1.0.1"
   }
 }

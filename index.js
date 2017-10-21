@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
-var unix = require('to-unix-timestamp');
+var unixTime = require('unix-time');
 var shortid = require('shortid');
  // sensors
 var sensorLib = require('node-dht-sensor');
@@ -222,7 +222,7 @@ setInterval(function (){
   const newPoint = new Data_point({
     // timeStamp: dateFormat(now, "h:MM TT"),
     _id: shortid.generate(),
-    timestamp: unix(now),
+    timestamp: unixTime(now),
     date: dateFormat(now, "dS mmmm, yyyy"),
     temp: ds18b20.temperatureSync('28-00000853833b'),
     humidity: dht_sensor.read()
