@@ -218,7 +218,7 @@ setInterval(function (){
   const newPoint = new Data_point({
     _id: shortid.generate(),
     createdAt: unix(new Date()),
-    date: dateFormat(now, "dS mmmm, yyyy"),
+    date: dateFormat(now, "mmmm d, yyyy"),
     temp: ds18b20.temperatureSync('28-00000853833b'),
     humidity: dht_sensor.read()
   });
