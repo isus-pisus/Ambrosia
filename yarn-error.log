@@ -1,0 +1,73 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn init
+
+PATH: 
+  /usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+
+Yarn version: 
+  1.1.0
+
+Node version: 
+  8.7.0
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/isus-pisus/umaxx-server.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/isus-pisus/umaxx-server/issues"
+    },
+    "homepage": "https://github.com/isus-pisus/umaxx-server#readme",
+    "dependencies": {
+      "bcrypt-nodejs": "0.0.3",
+      "bcryptjs": "^2.4.3",
+      "body-parser": "^1.17.1",
+      "cors": "^2.8.3",
+      "dateformat": "^2.0.0",
+      "ds18b20": "^0.1.0",
+      "express": "^4.16.2",
+      "jsonwebtoken": "^7.3.0",
+      "mongoose": "^4.9.4",
+      "morgan": "^1.8.1",
+      "node-dht-sensor": "0.0.32",
+      "passport": "^0.3.2",
+      "passport-jwt": "^2.2.1",
+      "rpi-dht-sensor": "^0.1.1",
+      "shortid": "^2.2.8",
+      "socket.io": "^2.0.3",
+      "time-stamp": "^2.0.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:119877:13)
+      at emitNone (events.js:105:13)
+      at Interface.emit (events.js:207:7)
+      at Interface._ttyWrite (readline.js:775:16)
+      at ReadStream.onkeypress (readline.js:160:10)
+      at emitTwo (events.js:125:13)
+      at ReadStream.emit (events.js:213:7)
+      at emitKeys (internal/readline.js:420:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1011:36)

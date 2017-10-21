@@ -28,7 +28,7 @@ var DataPoint = new DataPointschema({
     type: Date
   }
 });
-DataPoint.plugin(timeZone, { paths: ['timestamp'] });
+// DataPoint.plugin(timeZone, { paths: ['timestamp'] });
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
 
 module.exports = DataPointmodel;
