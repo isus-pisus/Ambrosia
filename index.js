@@ -135,7 +135,7 @@ app.get('/points', function (req, res){
 });
 
 app.get('/points/:date', function (req, res){
-  Data_point.find({date: req.params.date}, function(err, points){
+  Data_point.find({"date": req.params.date}, function(err, points){
     if (err) {
       console.log('an error occured');
     // } if(!points.data){
