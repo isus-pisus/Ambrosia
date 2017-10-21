@@ -144,9 +144,8 @@ app.get('/points/:date', function (req, res){
     //   // console.log(points);
     //   res.status(200).json({ success: false, msg: "No data found for "+req.params.date});
     // } else {
-      console.log(points);
-      res.status(200).json({ success: true, data: points });
-    }
+    console.log(points);
+    res.status(200).json({ success: true, data: points });
   })
 });
 
