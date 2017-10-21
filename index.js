@@ -188,15 +188,15 @@ io.on('connection', function(socket){
 setInterval(function (){
   var now = new Date();
 
-  var dht_sensor = {
-    initialize: function () {
-      return sensorLib.initialize(11, 6);
-    },
-    read: function () {
-      var readout = sensorLib.read();
-      return readout.humidity.toFixed(0);
-    }
-  };
+  // var dht_sensor = {
+  //   initialize: function () {
+  //     return sensorLib.initialize(11, 6);
+  //   },
+  //   read: function () {
+  //     var readout = sensorLib.read();
+  //     return readout.humidity.toFixed(0);
+  //   }
+  // };
 
   if (dht_sensor.initialize()) {
     dht_sensor.read();
