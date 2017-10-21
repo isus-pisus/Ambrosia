@@ -1,6 +1,3 @@
-
-// Log proxy requests
-
 var express = require('express');
 var app = express();
 var morgan  = require('morgan');
@@ -165,14 +162,11 @@ var dht_sensor = {
   },
   read: function () {
     var readout = sensorLib.read();
-    // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
-    // 'humidity: ' + readout.humidity.toFixed(2) + '%');
     return readout.humidity.toFixed(0);
   }
 };
 
 io.on('connection', function(socket){
-  // console.log('[+] a user connected');
   var now = new Date();
 
 
@@ -190,7 +184,7 @@ io.on('connection', function(socket){
   };
   io.emit('temperature', data);
 });
-// var temperature = 0;
+
 setInterval(function (){
   var now = new Date();
 
@@ -200,8 +194,6 @@ setInterval(function (){
     },
     read: function () {
       var readout = sensorLib.read();
-      // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
-      // 'humidity: ' + readout.humidity.toFixed(2) + '%');
       return readout.humidity.toFixed(0);
     }
   };
@@ -220,9 +212,7 @@ setInterval(function (){
   };
   io.emit('temperature', data);
   const newPoint = new Data_point({
-    // timeStamp: dateFormat(now, "h:MM TT"),
     _id: shortid.generate(),
-    // timestamp: unixTime(now),
     date: dateFormat(now, "dS mmmm, yyyy"),
     temp: ds18b20.temperatureSync('28-00000853833b'),
     humidity: dht_sensor.read()
@@ -233,44 +223,8 @@ setInterval(function (){
       console.log(err);
     }
   });
-  // console.log(data);
 }, 180000);
 
-// setInterval(function(){
-//   var now = new Date();
-//
-//   var dht_sensor = {
-//     initialize: function () {
-//       return sensorLib.initialize(11, 6);
-//     },
-//     read: function () {
-//       var readout = sensorLib.read();
-//       // console.log('Temperature: ' + readout.temperature.toFixed(2) + 'C, ' +
-//       // 'humidity: ' + readout.humidity.toFixed(2) + '%');
-//       return readout.humidity.toFixed(0);
-//     }
-//   };
-//
-//   if (dht_sensor.initialize()) {
-//     dht_sensor.read();
-//   } else {
-//     console.warn('Failed to initialize sensor');
-//   }
-//   const newPoint = new Data_point({
-//     // timeStamp: dateFormat(now, "h:MM TT"),
-//     _id: shortid.generate(),
-//     temp: ds18b20.temperatureSync('28-00000853833b'),
-//     humidity: dht_sensor.read()
-//   });
-//
-//   newPoint.save(function(err) {
-//     if (err) {
-//       console.log(err);
-//     }
-//   });
-//
-// // }, 1000);
-// }, 180000);
 io.listen(1724);
 app.listen(3000, function(){
     console.log('running on local host 3000');
