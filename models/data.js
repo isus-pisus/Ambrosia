@@ -1,4 +1,3 @@
-const timeZone = require('mongoose-timezone');
 var mongoose = require('mongoose');
 var express = require('express');
 var path = require('path');
