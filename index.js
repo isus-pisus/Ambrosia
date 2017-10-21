@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
-var unixTime = require('unix-time');
+// var unixTime = require('unix-time');
 var shortid = require('shortid');
  // sensors
 var sensorLib = require('node-dht-sensor');
