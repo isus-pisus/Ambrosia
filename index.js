@@ -15,6 +15,7 @@ var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
 // var unixTime = require('unix-time');
+var unix = require('to-unix-timestamp');
 var shortid = require('shortid');
  // sensors
 var sensorLib = require('node-dht-sensor');
@@ -139,6 +140,7 @@ app.get('/points/:date', function (req, res){
       console.log('an error occured');
     // } if(!points.data){
     } if(points.length == 0){
+      // console.log(points);
       res.status(200).json({ success: false, msg: "No data found for "+req.params.date});
     } else {
       res.status(200).json({ success: true, data: points });
@@ -213,6 +215,7 @@ setInterval(function (){
   io.emit('temperature', data);
   const newPoint = new Data_point({
     _id: shortid.generate(),
+    createdAt: unix(new Date()),
     date: dateFormat(now, "dS mmmm, yyyy"),
     temp: ds18b20.temperatureSync('28-00000853833b'),
     humidity: dht_sensor.read()
