@@ -141,7 +141,7 @@ app.get('/points/:date', function (req, res){
     } if(points.length == 0){
       res.status(200).json({ success: false, msg: "No data found for "+req.params.date});
     } else {
-        res.status(200).json({ success: true, data: points });
+      res.status(200).json({ success: true, data: points });
     }
   })
 });

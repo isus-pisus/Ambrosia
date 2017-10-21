@@ -29,10 +29,10 @@ var DataPoint = new DataPointschema({
 {
   timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
-DataPoint.plugin(timestamps,  {
-  createdAt: 'created_at',
-  updatedAt: 'updated_at'
-});
+// DataPoint.plugin(timestamps,  {
+//   createdAt: 'created_at',
+//   updatedAt: 'updated_at'
+// });
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
 
 module.exports = DataPointmodel;
