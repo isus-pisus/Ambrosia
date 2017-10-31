@@ -27,10 +27,6 @@ var DataPoint = new DataPointschema({
     type: String
   }
 });
-// DataPoint.plugin(timestamps,  {
-//   createdAt: 'created_at',
-//   updatedAt: 'updated_at'
-// });
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
 
 module.exports = DataPointmodel;

@@ -1,6 +1,8 @@
-var express = require('express');
-var app = express();
-var morgan  = require('morgan');
+require('./config/passport')(passport);
+require('./config/dev');
+let app = express();
+let morgan  = require('morgan');
+let express = require('express');
 const passport = require('passport');
 const config = require('./config/main'); // database informainton
 const Post = require('./models/post'); // schema for chart data point
@@ -11,28 +13,27 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-var http = require('http');
-var url = require('url');
-var dateFormat = require('dateformat');
-// var unixTime = require('unix-time');
-var unix = require('to-unix-timestamp');
-var shortid = require('shortid');
+let http = require('http');
+let url = require('url');
+let dateFormat = require('dateformat');
+let unix = require('to-unix-timestamp');
+let shortid = require('shortid');
+
  // sensors
-var sensorLib = require('node-dht-sensor');
-var ds18b20 = require('ds18b20');
-var rpiDhtSensor = require('rpi-dht-sensor');
+let sensorLib = require('node-dht-sensor');
+let ds18b20 = require('ds18b20');
+let rpiDhtSensor = require('rpi-dht-sensor');
 
 
-var io = require('socket.io')();
+let io = require('socket.io')();
 
 const requireAuth = passport.authenticate('jwt', { session: false });
-mongoose.connect(config.home);
+mongoose.connect(process.env.DATABASE);
 
 // Initialize passport for use
 app.use(passport.initialize());
 
 // Bring in defined Passport Strategy
-require('./config/passport')(passport);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({type: 'application/vnd.api+json'}));
@@ -40,7 +41,6 @@ app.use(bodyParser.json({type: 'application/json'}));
 app.use(cors());
 
 app.use(function(req, res, next) {
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
   	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   	res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
     next();
@@ -48,7 +48,6 @@ app.use(function(req, res, next) {
 app.use(morgan('dev'));
 
 app.post('/register', function(req, res) {
-  console.log(req.body);
   if(!req.body.login || !req.body.email || !req.body.password) {
     res.status(400).json({ success: false, message: 'Please enter email and password.' });
   } else {
@@ -82,7 +81,7 @@ app.post('/login', function(req, res) {
       user.comparePassword(req.body.password, function(err, isMatch) {
         if (isMatch && !err) {
           // Create token if the password matched and no error was thrown
-          const token = jwt.sign(user, config.secret, {
+          const token = jwt.sign(user, process.env.HASH_SECRET, {
             expiresIn: 10080 // in seconds
           });
           // console.log(token);
@@ -95,7 +94,7 @@ app.post('/login', function(req, res) {
   });
 });
 
-// find user and attemp authentication, ruturn status and token
+// find user and attemp authentication, ruturn status and token if Authenticated
 
 app.post('/token', function(req, res) {
   console.log(req.body.password, req.body.email);
@@ -107,14 +106,11 @@ app.post('/token', function(req, res) {
     if (!user) {
       res.status(401).json({ success: false, message: 'Authentication failed. User not found.' });
     } else {
-      // Check if password matches
       user.comparePassword(req.body.password, function(err, isMatch) {
         if (isMatch && !err) {
-          // Create token if the password matched and no error was thrown
-          const token = jwt.sign(user, config.secret, {
+          const token = jwt.sign(user, process.env.HASH_SECRET, {
             expiresIn: 10080 // in seconds
           });
-          // console.log(token);
           res.status(200).json({ success: true, access_token: 'JWT ' + token });
         } else {
           res.status(401).json({ success: false, message: 'Authentication failed. Passwords did not match.' });
@@ -135,7 +131,7 @@ app.get('/points', function (req, res){
 });
 
 app.get('/points/:date', function (req, res){
-  console.log(req.params);
+  // console.log(req.params);
   Data_point.find({date: req.params.date}, function(err, points){
     if (err) {
       console.log('an error occured');
@@ -145,19 +141,20 @@ app.get('/points/:date', function (req, res){
       // console.log(points);
       res.status(200).json({ success: false, msg: "No data found for "+req.params.date});
     } else {
-    console.log(points);
-    res.status(200).json({ success: true, data: points });
+      console.log(points);
+      res.status(200).json({ success: true, data: points });
+    }
   })
 });
 
-app.delete('/points/:date', function (req, res){
+app.delete('/points/:date', requireAuth, function (req, res){
   Data_point.remove({date: req.params.date}, function(err, points){
     if (err) {
       console.log('an error occured');
     } else {
         res.status(200).json({ success: true});
     }
-  })
+  });
 });
 
 var dht_sensor = {
@@ -192,16 +189,6 @@ io.on('connection', function(socket){
 setInterval(function (){
   var now = new Date();
 
-  // var dht_sensor = {
-  //   initialize: function () {
-  //     return sensorLib.initialize(11, 6);
-  //   },
-  //   read: function () {
-  //     var readout = sensorLib.read();
-  //     return readout.humidity.toFixed(0);
-  //   }
-  // };
-
   if (dht_sensor.initialize()) {
     dht_sensor.read();
   } else {
@@ -230,8 +217,8 @@ setInterval(function (){
   });
 }, 180000);
 
-io.listen(1724);
-app.listen(3000, function(){
+io.listen(process.env.SOCKET_PORT);
+app.listen(process.env.SERVER_PORT, function(){
     console.log('running on local host 3000');
 });
 
