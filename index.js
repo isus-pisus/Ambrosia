@@ -1,5 +1,4 @@
 require('./config/dev');
-var app = express();
 var morgan  = require('morgan');
 var express = require('express');
 const passport = require('passport');
@@ -17,6 +16,7 @@ var url = require('url');
 var dateFormat = require('dateformat');
 var unix = require('to-unix-timestamp');
 var shortid = require('shortid');
+var app = express();
 
  // sensors
 var sensorLib = require('node-dht-sensor');
