@@ -1,4 +1,3 @@
-require('./config/passport')(passport);
 require('./config/dev');
 let app = express();
 let morgan  = require('morgan');
@@ -34,6 +33,7 @@ mongoose.connect(process.env.DATABASE);
 app.use(passport.initialize());
 
 // Bring in defined Passport Strategy
+require('./config/passport')(passport);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({type: 'application/vnd.api+json'}));
