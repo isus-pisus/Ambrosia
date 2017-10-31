@@ -1,7 +1,7 @@
 require('./config/dev');
-let app = express();
-let morgan  = require('morgan');
-let express = require('express');
+var app = express();
+var morgan  = require('morgan');
+var express = require('express');
 const passport = require('passport');
 const config = require('./config/main'); // database informainton
 const Post = require('./models/post'); // schema for chart data point
@@ -12,19 +12,19 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-let http = require('http');
-let url = require('url');
-let dateFormat = require('dateformat');
-let unix = require('to-unix-timestamp');
-let shortid = require('shortid');
+var http = require('http');
+var url = require('url');
+var dateFormat = require('dateformat');
+var unix = require('to-unix-timestamp');
+var shortid = require('shortid');
 
  // sensors
-let sensorLib = require('node-dht-sensor');
-let ds18b20 = require('ds18b20');
-let rpiDhtSensor = require('rpi-dht-sensor');
+var sensorLib = require('node-dht-sensor');
+var ds18b20 = require('ds18b20');
+var rpiDhtSensor = require('rpi-dht-sensor');
 
 
-let io = require('socket.io')();
+var io = require('socket.io')();
 
 const requireAuth = passport.authenticate('jwt', { session: false });
 mongoose.connect(process.env.DATABASE);
