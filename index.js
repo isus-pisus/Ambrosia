@@ -2,15 +2,13 @@ require('./config/dev');
 var morgan  = require('morgan');
 var express = require('express');
 const passport = require('passport');
-const config = require('./config/main'); // database informainton
-const Post = require('./models/post'); // schema for chart data point
 const Data_point = require('./models/data'); // schema for chart data point
-const Image = require('./models/image'); // schema for chart data point
 const User = require('./models/user'); // schema for user info
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+var GPIO = require('onoff').Gpio;
 var http = require('http');
 var url = require('url');
 var dateFormat = require('dateformat');
@@ -41,8 +39,8 @@ app.use(bodyParser.json({type: 'application/json'}));
 app.use(cors());
 
 app.use(function(req, res, next) {
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  	res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
     next();
 });
 app.use(morgan('dev'));
@@ -148,66 +146,68 @@ app.get('/points/:date', function (req, res){
 });
 
 app.delete('/points/:date', requireAuth, function (req, res){
-  Data_point.remove({date: req.params.date}, function(err, points){
+  Data_point.remove({date: req.params.date},false, function(err, points){
     if (err) {
       console.log('an error occured');
     } else {
         res.status(200).json({ success: true});
+        console.log({ success: true});
     }
   });
 });
 
-var dht_sensor = {
-  initialize: function () {
-    return sensorLib.initialize(11, 6);
-  },
-  read: function () {
-    var readout = sensorLib.read();
-    return readout.humidity.toFixed(0);
-  }
-};
+//adding pump functionality
+
+var readout = sensorLib.read(11, 6);
+var led = new GPIO(17, 'out');
 
 io.on('connection', function(socket){
   var now = new Date();
-
-
-  if (dht_sensor.initialize()) {
-    dht_sensor.read();
-  } else {
-    console.warn('Failed to initialize sensor');
-  }
-  var data = {
-    timeStamp: dateFormat(now, "h:MM TT"),
+  var emit_data = {
+    time: dateFormat(now, "h:MM TT"),
+    date: dateFormat(now, "mmmm d, yyyy"),
     point: {
       temp: ds18b20.temperatureSync('28-00000853833b'),
-      humidity: dht_sensor.read()
+      humidity: readout.humidity.toFixed(0)
     }
   };
-  io.emit('temperature', data);
+
+  io.emit('justConnected', emit_data);
+  socket.on('pump', function(params){
+    if (params.state == true){
+      led.writeSync(1);
+    }else{
+      led.writeSync(0);
+    }
+  });
 });
 
-setInterval(function (){
+
+setInterval( function (){
   var now = new Date();
 
-  if (dht_sensor.initialize()) {
-    dht_sensor.read();
-  } else {
-    console.warn('Failed to initialize sensor');
-  }
   var data = {
     timeStamp: dateFormat(now, "h:MM TT"),
     point: {
       temp: ds18b20.temperatureSync('28-00000853833b'),
-      humidity: dht_sensor.read()
+      humidity: readout.humidity.toFixed(0)
     }
   };
-  io.emit('temperature', data);
+  var emit_data = {
+    time: dateFormat(now, "h:MM TT"),
+    date: dateFormat(now, "mmmm d, yyyy"),
+    point: {
+      temp: ds18b20.temperatureSync('28-00000853833b'),
+      humidity: readout.humidity.toFixed(0)
+    }
+  };
+  io.emit('temperature', emit_data);
   const newPoint = new Data_point({
     _id: shortid.generate(),
     createdAt: unix(new Date()),
     date: dateFormat(now, "mmmm d, yyyy"),
     temp: ds18b20.temperatureSync('28-00000853833b'),
-    humidity: dht_sensor.read()
+    humidity: readout.humidity.toFixed(0)
   });
 
   newPoint.save(function(err) {
@@ -215,7 +215,26 @@ setInterval(function (){
       console.log(err);
     }
   });
-}, 180000);
+      console.log("emit");
+}, 10*60*1000);
+
+/**
+	collecting and sending data from pH, Nitrogen, co2, Turbidity and light sensor every two minute
+ **/
+
+setInterval( function() {
+  var variousSensorData  = {
+  	lightSensor: 0,
+  	preTurbidity: 0,
+  	postTurbidity: 0,
+  	nitrogen: 0,
+  	co2: 0,
+  	pH: 0
+  };
+  io.emit('liveStreamData', variousSensorData);
+
+}, 1*60*1000);
+
 
 io.listen(process.env.SOCKET_PORT);
 app.listen(process.env.SERVER_PORT, function(){

@@ -20,6 +20,7 @@
     "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
+    "chart.js": "2.7.0",
     "cors": "^2.8.3",
     "dateformat": "^2.0.0",
     "ds18b20": "^0.1.0",
