@@ -1,19 +1,15 @@
 var mongoose = require('mongoose');
 var express = require('express');
-var path = require('path');
 
 var router = express.Router();
 var app = express();
+
 var DataPointschema = mongoose.Schema;
 
 var DataPoint = new DataPointschema({
   _id: {
-      type: String,
-      required: true
-  },
-  date: {
-    type: String,
-    required: true
+    type: DataPointschema.ObjectId,
+    auto: true
   },
   temp: {
     type: Number,
@@ -23,8 +19,25 @@ var DataPoint = new DataPointschema({
     type: Number,
     required: true
   },
-  createdAt: {
-    type: String
+  lightSensor: {
+    type: Number,
+    required: true
+  },
+  turbidity: {
+    type: Number,
+    required: true
+  },
+  nitrogen: {
+    type: Number,
+    required: true
+  },
+  co2: {
+    type: Number,
+    required: true
+  },
+  pH: {
+    type: Number,
+    required: true
   }
 });
 var DataPointmodel = mongoose.model('DataPoint', DataPoint);
