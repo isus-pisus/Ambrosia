@@ -4,7 +4,7 @@ import { getTemperature, getHumidity } from './libs/readSensor.lib';
 
 const authenticationRoutes  = require('./routes/authentication');
 const queryDataRoutes  = require('./routes/queryData');
-const Data_point = require('../models/data');
+const Data_point = require('./models/data');
 const morgan  = require('morgan');
 const express = require('express');
 const passport = require('passport');
