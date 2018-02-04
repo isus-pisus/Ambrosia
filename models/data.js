@@ -23,7 +23,7 @@ var DataPoint = new DataPointschema({
     type: Number,
     required: true
   },
-  turbidity: {
+  conductivity: {
     type: Number,
     required: true
   },
@@ -36,6 +36,10 @@ var DataPoint = new DataPointschema({
     required: true
   },
   pH: {
+    type: Number,
+    required: true
+  },
+  createdAt: {
     type: Number,
     required: true
   }
