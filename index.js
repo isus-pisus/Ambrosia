@@ -1,5 +1,5 @@
 require('./config/dev');
-import { automateDevice } from './libs/control.lib';
+import { automateDevice, beacon } from './libs/control.lib';
 import { getTemperature, getHumidity } from './libs/readSensor.lib';
 
 const authenticationRoutes  = require('./routes/authentication');
@@ -15,6 +15,7 @@ const cors = require('cors');
 const http = require('http');
 const url = require('url');
 const dateFormat = require('dateformat');
+const unix = require('unix-time');
 const io = require('socket.io')();
 var app = express();
 
@@ -89,10 +90,11 @@ setInterval( ()=> {
     temp: getTemperature(),
     humidity: getHumidity(),
     lightSensor: 0,
-    turbidity: 0,
+    conductivity: 0,
     nitrogen: 0,
     co2: 0,
-    pH: 0
+    pH: 0,
+    createdAt: unix(dateFormat(now, "mmmm d, yyyy"))
   });
 
   newPoint.save(function(err) {
@@ -107,7 +109,7 @@ setInterval( () => {
 
   let emit_data  = {
   	lightSensor: 0,
-  	turbidity: 0,
+  	conductivity: 0,
   	nitrogen: 0,
   	co2: 0,
   	pH: 0
@@ -118,6 +120,21 @@ setInterval( () => {
   // TODO: add sonctionality to save sensor data to database
 
 }, 1*60*1000);
+
+// TODO: write cleaner code for turning on devices
+// turn on pump every 20 min for 30 sec
+setInterval(()=>{
+  automateDevice('pump', true, 30000);
+
+}, 20*60*1000);
+
+// turn on pump every 12 hours for 12 hours
+setInterval(()=>{
+  automateDevice('led', true, 12*60*60*1000);
+
+}, 12*60*60*1000);
+// flash signal led
+beacon();
 
 io.listen(process.env.SOCKET_PORT);
 
