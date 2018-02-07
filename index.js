@@ -1,5 +1,5 @@
 require('./config/dev');
-import { automateDevice, beacon } from './libs/control.lib';
+import { startSequence } from './libs/control.lib';
 import { getTemperature, getHumidity } from './libs/readSensor.lib';
 
 const authenticationRoutes  = require('./routes/authentication');
@@ -121,20 +121,7 @@ setInterval( () => {
 
 }, 1*60*1000);
 
-// TODO: write cleaner code for turning on devices
-// turn on pump every 20 min for 30 sec
-setInterval(()=>{
-  automateDevice('pump', true, 30000);
-
-}, 20*60*1000);
-
-// turn on pump every 12 hours for 12 hours
-setInterval(()=>{
-  automateDevice('led', true, 12*60*60*1000);
-
-}, 12*60*60*1000);
-// flash signal led
-beacon();
+startSequence();
 
 io.listen(process.env.SOCKET_PORT);
 
