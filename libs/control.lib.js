@@ -1,81 +1,58 @@
 var GPIO = require('onoff').Gpio;
+const dateFormat = require('dateformat');
 import { devicePins } from '../config/pins';
 
-// led beacon
-let beacon = () => {
-  let idleLed = new GPIO(devicePins['idleLed'], 'out');
-  setInterval(()=>{
-    idleLed.writeSync(1);
-    setTimeout(()=> {
-      idleLed.writeSync(0);
-    }, 100);
-
-  }, 3000);
+class automate {
+  constructor(device, onTime, offTime){
+    this.deviceToAutomate = new GPIO(devicePins[`${device}`], 'out');
+    this.onTime = onTime;
+    this.offTime = offTime;
+  }
+  run = () => {
+    this.deviceToAutomate.writeSync(1);
+    setInterval(()=>{
+      this.deviceToAutomate.writeSync(0);
+      setTimeout(()=> {
+        this.deviceToAutomate.writeSync(1);
+      }, this.offTime);
+    }, this.onTime);
+  }
 }
 
 
-let run = (device, state, duration) => {
-  let applySignal = new GPIO(devicePins[`${device}`], 'out');
-
-  applySignal.writeSync(Number(state));
-  setTimeout(()=> {
-    applySignal.writeSync(Number(!state));
-  }, duration);
-
-}
-
-let automateDevice = (device, state, duration) => {
+let automateDevice = (device, state, onTime, offTime) => {
 
   switch (device) {
     case 'led':
-
-      run(device, state, duration);
+      var led = new automate(device, onTime, offTime)
+      led.run();
       break;
 
-    case 'fan':
+    case 'idleLed':
 
-      run(device, state, duration);
+      var idleLed = new automate(device, onTime, offTime)
+      idleLed.run();
       break;
 
     case 'pump':
-      run(device, state, duration);
+      var pump = new automate(device, onTime, offTime)
+      pump.run();
       break;
 
     default:
-
 
   }
 }
 
 let killAllOutput = (state) =>{
-  // console.log(devicePins);
   let toKill = Object.values(devicePins);
   for (var i = 0; i < toKill.length; i++) {
     toKill[i]
     let applySignal = new GPIO(toKill[i], 'out');
     applySignal.writeSync(Number(!state));
-
-    // console.log();
   }
 }
 
 export let startSequence = () => {
-  // TODO: write cleaner code for turning on devices
-  // turn on pump every 20 min for 30 sec
-  setInterval(()=>{
-    automateDevice('pump', true, 3*1000);
-
-  }, 3*1000);
-  // }, 20*60*1000);
-
-  // turn on pump every 12 hours for 12 hours
-  setInterval(()=>{
-    automateDevice('led', true, 12*60*60*1000);
-
-  }, 12*60*60*1000);
-  // flash signal led
-
   killAllOutput(true);
-
-  beacon();
 }
