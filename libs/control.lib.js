@@ -6,21 +6,30 @@ class automate {
   constructor(device, onTime, offTime){
     this.deviceToAutomate = new GPIO(devicePins[`${device}`], 'out');
     this.onTime = onTime;
-    this.offTime = offTime;
+    this.offTime = offTime
+    this.state = true
   }
   run = () => {
     this.deviceToAutomate.writeSync(1);
-    setInterval(()=>{
-      this.deviceToAutomate.writeSync(0);
-      setTimeout(()=> {
-        this.deviceToAutomate.writeSync(1);
-      }, this.offTime);
+    var timeinterval = setInterval(()=>{
+      if (timeinterval._called){
+        if (this.onTime === this.offTime){
+          this.state = !this.state;
+          this.deviceToAutomate.writeSync(Number(!this.state));
+        }
+        if (timeinterval._repeat === this.offTime) {
+          timeinterval._repeat = this.onTime;
+          this.deviceToAutomate.writeSync(1);
+        } else if (timeinterval._repeat === this.onTime) {
+          timeinterval._repeat = this.offTime;
+          this.deviceToAutomate.writeSync(0);
+        }
+      }
     }, this.onTime);
   }
 }
 
-
-let automateDevice = (device, state, onTime, offTime) => {
+export let automateDevice = (device, state, onTime, offTime) => {
 
   switch (device) {
     case 'led':
@@ -29,7 +38,6 @@ let automateDevice = (device, state, onTime, offTime) => {
       break;
 
     case 'idleLed':
-
       var idleLed = new automate(device, onTime, offTime)
       idleLed.run();
       break;
