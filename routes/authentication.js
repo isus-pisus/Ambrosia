@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const routes = require('express').Router();
 
+// email, password and username are passed as paramaters
+
 routes.post('/register', (req, res) => {
   if(!req.body.login || !req.body.email || !req.body.password) {
     res.status(400).json({ success: false, message: 'Please enter email and password.' });
@@ -12,7 +14,7 @@ routes.post('/register', (req, res) => {
       password: req.body.password
     });
 
-    // Attempt to save the user
+    // Attempt to save the user information
     newUser.save( (err) => {
       if (err) {
         return res.status(400).json({ success: false, message: 'That email address already exists.'});
@@ -21,6 +23,11 @@ routes.post('/register', (req, res) => {
     });
   }
 })
+
+/*
+email and password are passed as parameters through body to authenticate the user
+and return a token
+*/
 
 routes.post('/login', (req, res) => {
   User.findOne({
@@ -31,7 +38,6 @@ routes.post('/login', (req, res) => {
     if (!user) {
       res.status(401).json({ success: false, message: 'Authentication failed. User not found.' });
     } else {
-      // Check if password matches
       user.comparePassword(req.body.password, (err, isMatch) => {
         if (isMatch && !err) {
           const token = jwt.sign(user, process.env.HASH_SECRET, {
@@ -44,6 +50,11 @@ routes.post('/login', (req, res) => {
     }
   })
 })
+
+/*
+  email and password are passed as parameters through body to authenticate the user
+  and return a token
+*/
 
 routes.post('/token', (req, res) => {
   console.log(req.body.password, req.body.email);

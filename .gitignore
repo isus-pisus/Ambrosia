@@ -10,10 +10,10 @@
 
 # misc
 /.sass-cache
+.tern-project
 /connect.lock
 /coverage/*
 /libpeerconnection.log
 npm-debug.log*
 testem.log
 .env
-
