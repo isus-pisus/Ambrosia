@@ -4,18 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "babel-node ./index.js --preset=babel-preset-es2015s",
+    "test": "eslint src"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/isus-pisus/umaxx-server.git"
+    "url": "git+https://github.com/isus-pisus/Ambrosia.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/isus-pisus/umaxx-server/issues"
+    "url": "https://github.com/isus-pisus/Ambrosia/issues"
   },
-  "homepage": "https://github.com/isus-pisus/umaxx-server#readme",
+  "homepage": "https://github.com/isus-pisus/Ambrosia#readme",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "^2.4.3",
@@ -26,6 +34,7 @@
     "ds18b20": "^0.1.0",
     "express": "^4.16.2",
     "jsonwebtoken": "^7.3.0",
+    "moment": "^2.20.1",
     "mongoose": "^4.9.4",
     "morgan": "^1.8.1",
     "node-dht-sensor": "0.0.32",
@@ -37,5 +46,13 @@
     "time-stamp": "^2.0.0",
     "to-unix-timestamp": "github:segmentio/to-unix-timestamp",
     "unix-time": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "eslint": "^3.1.1",
+    "nodemon": "^1.9.2"
   }
 }
