@@ -1,20 +1,64 @@
 const Data_point = require('../models/data');
 const routes = require('express').Router();
-const unix = require('unix-time');
+var _ = require('lodash');
+
 
 // get all data point saved in database
 
 routes.get('/points', (req, res) => {
-  Data_point.find((err, points) => {
-    if (err) {
-      console.log('an error occured');
-    }
-    if(points.length == 0){
-      res.status(200).json({ success: false, msg: "No data found for "+req.params.date});
-    } else {
-      res.status(200).json({ success: true, data: points });
-    }
-  })
+
+  if (req.query.end === undefined && req.query.start === undefined) {
+    Data_point.find((err, points) => {
+      if (err) {
+        console.log('an error occured');
+      }
+      if(points.length == 0){
+        res.status(200).json({ success: false, msg: "No data found"});
+      } else {
+        res.status(200).json({ success: true, data: points });
+      }
+    })
+  }
+
+  if (_.isString(req.query.start) && req.query.end === undefined ) {
+    Data_point.find({createdAt: {"$gte": req.query.start}}, (err, points) => {
+      if (err) {
+        console.log('an error occured');
+      }
+      if(points.length == 0){
+        res.status(200).json({ success: false, msg: "No data found for "+req.query.start});
+      } else {
+        res.status(200).json({ success: true, data: points });
+      }
+    })
+  }
+
+  if (_.isString(req.query.end) && req.query.start === undefined) {
+    Data_point.find({createdAt: {"$lte": req.query.end}}, (err, points) => {
+      if (err) {
+        console.log('an error occured');
+      }
+      if(points.length == 0){
+        res.status(200).json({ success: false, msg: "No data found for "+req.query.end});
+      } else {
+        res.status(200).json({ success: true, data: points});
+      }
+    })
+  }
+
+  if (_.isString(req.query.start) && _.isString(req.query.end)) {
+    Data_point.find({createdAt: {"$gte": req.query.start, "$lte": req.query.end}}, (err, points) => {
+      if (err) {
+        console.log('an error occured');
+      }
+      if(points.length == 0){
+        res.status(200).json({ success: false, msg: "No data found for "+req.query.start+" and "+req.query.end});
+      } else {
+        res.status(200).json({ success: true, data: points });
+      }
+    })
+  }
+
 })
 
 /*
@@ -23,7 +67,7 @@ routes.get('/points', (req, res) => {
 */
 
 routes.get('/points/:date', (req, res) => {
-  Data_point.find({createdAt: unix(req.params.date)}, (err, points) => {
+  Data_point.find({createdAt: req.params.date}, (err, points) => {
     if (err) {
       console.log('an error occured');
     }
@@ -42,7 +86,7 @@ routes.get('/points/:date', (req, res) => {
 */
 
 routes.get('/points/:date', (req, res) => {
-  Data_point.remove({createdAt: unix(req.params.date)},false, (err, points) => {
+  Data_point.remove({createdAt: req.params.date},false, (err, points) => {
     if (err) {
       console.log('an error occured');
     } else {
