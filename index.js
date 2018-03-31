@@ -1,5 +1,4 @@
 require('./config/dev');
-require('./config/passport')(passport);
 import { startSequence, automateDevice, startInXTime } from './libs/control.lib';
 import { getTemperature, getHumidity } from './libs/readSensor.lib';
 const authenticationRoutes  = require('./routes/authentication');
@@ -18,11 +17,12 @@ const unix = require('unix-time');
 const io = require('socket.io')();
 var app = express();
 const requireAuth = passport.authenticate('jwt', { session: false });
+require('./config/passport')(passport);
 
 //middleware setup
+app.use(passport.initialize());
 
 mongoose.connect(process.env.DATABASE);
-app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 app.use(bodyParser.json({type: 'application/json'}));
