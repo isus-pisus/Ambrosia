@@ -2,63 +2,50 @@ const Data_point = require('../models/data');
 const routes = require('express').Router();
 var _ = require('lodash');
 
-
 // get all data point saved in database
+function handleResponse(res, err, points, next) {
+  try {
+    if (err) {
+      res.status(400).json({msg: "No data found for date entered. The problem might be that the query string is not a valid unix timestamp or the data simply doesn't exist"});
+    }
+    if(points.length == 0){
+      res.status(200).json({msg: "No data found for date entered. The problem might be that the query string is not a valid unix timestamp or the data simply doesn't exist"});
+    }
+    if(_.isUndefined(points.length)){
+      res.status(400).json({msg: "No data found for date entered. The problem might be that the query string is not a valid unix timestamp or the data simply doesn't exist"});
+    } else {
+      res.status(200).json({ success: true, data: points});
+    }
+  } catch (e) {
+    next();
+    ;
+  }
+}
 
-routes.get('/points', (req, res) => {
-
-  if (req.query.end === undefined && req.query.start === undefined) {
+routes.get('/points', handleResponse, (req, res, next) => {
+  if ( _.isUndefined(req.query.start) && _.isUndefined(req.query.end)) {
     Data_point.find((err, points) => {
-      if (err) {
-        console.log('an error occured');
-      }
-      if(points.length == 0){
-        res.status(200).json({ success: false, msg: "No data found"});
-      } else {
-        res.status(200).json({ success: true, data: points });
-      }
+      handleResponse(res, err, points, next);
     })
   }
 
-  if (_.isString(req.query.start) && req.query.end === undefined ) {
+  if (_.isString(req.query.start) && _.isUndefined(req.query.end)) {
     Data_point.find({createdAt: {"$gte": req.query.start}}, (err, points) => {
-      if (err) {
-        console.log('an error occured');
-      }
-      if(points.length == 0){
-        res.status(200).json({ success: false, msg: "No data found for "+req.query.start});
-      } else {
-        res.status(200).json({ success: true, data: points });
-      }
+      handleResponse(res, err, points, next);
     })
   }
 
-  if (_.isString(req.query.end) && req.query.start === undefined) {
+  if ( _.isUndefined(req.query.start) && _.isString(req.query.end)) {
     Data_point.find({createdAt: {"$lte": req.query.end}}, (err, points) => {
-      if (err) {
-        console.log('an error occured');
-      }
-      if(points.length == 0){
-        res.status(200).json({ success: false, msg: "No data found for "+req.query.end});
-      } else {
-        res.status(200).json({ success: true, data: points});
-      }
+      handleResponse(res, err, points, next);
     })
   }
 
   if (_.isString(req.query.start) && _.isString(req.query.end)) {
     Data_point.find({createdAt: {"$gte": req.query.start, "$lte": req.query.end}}, (err, points) => {
-      if (err) {
-        console.log('an error occured');
-      }
-      if(points.length == 0){
-        res.status(200).json({ success: false, msg: "No data found for "+req.query.start+" and "+req.query.end});
-      } else {
-        res.status(200).json({ success: true, data: points });
-      }
-    })
+      handleResponse(res, err, points, next);
+    });
   }
-
 })
 
 /*
@@ -66,17 +53,9 @@ routes.get('/points', (req, res) => {
   format, NB date is currently being passed in the format 'mmmm dd, yyyy'
 */
 
-routes.get('/points/:date', (req, res) => {
+routes.get('/points/:date', handleResponse , (req, res, next) => {
   Data_point.find({createdAt: req.params.date}, (err, points) => {
-    if (err) {
-      console.log('an error occured');
-    }
-    if(points.length == 0){
-      res.status(200).json({ success: false, msg: "No data found for "+ req.params.date});
-    } else {
-      console.log(points);
-      res.status(200).json({ success: true, data: points });
-    }
+    handleResponse(res, err, points, next);
   })
 })
 
